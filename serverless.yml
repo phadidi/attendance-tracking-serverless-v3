@@ -17,12 +17,12 @@ provider:
           Action:
             - dynamodb:*
           Resource:
-            - yourARN
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.usersTable}
         - Effect: Allow
           Action:
             - dynamodb:*
           Resource:
-            - yourARN
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.tempLoginTable}
 
 functions:
   loginUser:
