@@ -1,0 +1,104 @@
+service: attendance-tracker-serverless-v3
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  profile: ServerlessUserBasic
+  environment:
+    usersTable: ${self:custom.usersTable}
+    coursesTable: ${self:custom.coursesTable}
+    tempLoginTable: ${self:custom.tempLoginTable}
+  ##TODO: add the arns of the new tables, grant fine grained permissions per lambda
+  iam: #TODO: reduce these to principle of least privilege
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource:
+            - yourARN
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource:
+            - yourARN
+
+functions:
+  loginUser:
+    handler: handlers/loginUser/loginUser.handler
+    events:
+      - http:
+          path: /login
+          cors: true
+          method: post
+  registerUser:
+    handler: handlers/registerUser/registerUser.handler
+    events:
+      - http:
+          path: /register
+          cors: true
+          method: post
+#   addStudentAttendance:
+#     handler: src/addStudentAttendance/addStudentAttendance.handler
+#     events:
+#       - http:
+#           path: /addAttendance
+#           cors: true
+#           method: post
+
+##TODO: integrate this plugin with the app
+plugins:
+  - serverless-s3-sync
+  - serverless-webpack
+
+package:
+  individually: true
+
+custom:
+  s3Sync:
+    - bucketName: attendance-tracker-bucket-19054
+      localDir: attendance-tracker-frontend
+  usersTable: attendance-tracker-users
+  coursesTable: attendance-tracker-courses
+  tempLoginTable: attendance-tracker-users-temp-login #TODO: add hashing, phase this into a Cognito user pool
+
+resources:
+  Resources:
+    AttendanceTrackerBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: attendance-tracker-bucket-19054
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.usersTable}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    CoursesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.coursesTable}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    TempLoginTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tempLoginTable}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
