@@ -56,8 +56,9 @@ package:
   individually: true
 
 custom:
+  frontendBucketName: attendance-tracker-bucket-19054
   s3Sync:
-    - bucketName: attendance-tracker-bucket-19054
+    - bucketName: ${self:custom.frontendBucketName}
       localDir: attendance-tracker-frontend
   usersTable: attendance-tracker-users
   coursesTable: attendance-tracker-courses
@@ -68,7 +69,58 @@ resources:
     AttendanceTrackerBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: attendance-tracker-bucket-19054
+        BucketName: ${self:custom.frontendBucketName}
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    S3AccessPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: AttendanceTrackerBucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::${self:custom.frontendBucketName}/*
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: ${self:custom.frontendBucketName}.s3.amazonaws.com
+              Id: AttendanceTrackerApp
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
+          Enabled: true
+          DefaultRootObject: index.html
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            TargetOriginId: AttendanceTrackerApp
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -80,6 +132,14 @@ resources:
           - AttributeName: ID
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+        # TODO: determine if Global Secondary Index(es) is/are necessary, example below:
+        # GlobalSecondaryIndexes:
+        #   - IndexName: table-index
+        #     KeySchema:
+        #       - AttributeName: name
+        #         KeyType: HASH
+        #     Projection:
+        #       ProjectionType: ALL
     CoursesTable:
       Type: AWS::DynamoDB::Table
       Properties:
