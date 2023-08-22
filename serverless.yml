@@ -9,7 +9,8 @@ provider:
     usersTable: ${self:custom.usersTable}
     coursesTable: ${self:custom.coursesTable}
     tempLoginTable: ${self:custom.tempLoginTable}
-  ##TODO: add the arns of the new tables, grant fine grained permissions per lambda
+    attendanceTable: ${self:custom.attendanceTable}
+  ##TODO: grant fine grained permissions per lambda
   iam: #TODO: reduce these to principle of least privilege
     role:
       statements:
@@ -39,11 +40,18 @@ functions:
           path: /register
           cors: true
           method: post
-#   addStudentAttendance:
-#     handler: src/addStudentAttendance/addStudentAttendance.handler
+  student-addAttendance:
+    handler: handlers/student-addAttendance/addAttendance.handler
+    events:
+      - http:
+          path: /addAttendance
+          cors: true
+          method: post
+#   teacher-verifyAttendance:
+#     handler: handlers/teacher-verifyAttendance/verifyAttendance.handler
 #     events:
 #       - http:
-#           path: /addAttendance
+#           path: /verifyAttendance
 #           cors: true
 #           method: post
 
@@ -61,6 +69,7 @@ custom:
       localDir: attendance-tracker-frontend/build/
   usersTable: attendance-tracker-users
   coursesTable: attendance-tracker-courses
+  attendanceTable: attendance-tracker-student-attendances
   tempLoginTable: attendance-tracker-users-temp-login #TODO: add hashing, phase this into a Cognito user pool
 
 resources:
@@ -126,6 +135,17 @@ resources:
         TableName: ${self:custom.usersTable}
         AttributeDefinitions:
           - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    AttendanceTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.attendanceTable}
+        AttributeDefinitions:
+          - AttributeName: ID #TODO: make the primary key a combo of ID/email, course section, and date rows
             AttributeType: S
         KeySchema:
           - AttributeName: ID
