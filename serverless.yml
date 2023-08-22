@@ -47,7 +47,6 @@ functions:
 #           cors: true
 #           method: post
 
-##TODO: integrate this plugin with the app
 plugins:
   - serverless-s3-sync
   - serverless-webpack
@@ -59,7 +58,7 @@ custom:
   frontendBucketName: attendance-tracker-bucket-19054
   s3Sync:
     - bucketName: ${self:custom.frontendBucketName}
-      localDir: attendance-tracker-frontend
+      localDir: attendance-tracker-frontend/build/
   usersTable: attendance-tracker-users
   coursesTable: attendance-tracker-courses
   tempLoginTable: attendance-tracker-users-temp-login #TODO: add hashing, phase this into a Cognito user pool
@@ -98,7 +97,7 @@ resources:
                 HTTPPort: 80
                 HTTPSPort: 443
                 OriginProtocolPolicy: https-only
-          Enabled: true
+          Enabled: "true"
           DefaultRootObject: index.html
           CustomErrorResponses:
             - ErrorCode: 404
@@ -115,7 +114,7 @@ resources:
               - PUT
             TargetOriginId: AttendanceTrackerApp
             ForwardedValues:
-              QueryString: false
+              QueryString: "false"
               Cookies:
                 Forward: none
             ViewerProtocolPolicy: redirect-to-https
