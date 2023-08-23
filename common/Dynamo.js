@@ -52,5 +52,16 @@ const Dynamo = {
     };
     return documentClient.update(params).promise();
   },
+  //TODO: determine if this function is needed for updating the to-be-implemented student attendances DB
+  query: async ({ TableName, index, queryKey, queryValue }) => {
+    const params = {
+      TableName,
+      IndexName: index,
+      KeyConditionExpression: `${queryKey} = :hkey`,
+      ExpressionAttributeValues: { ':hkey': queryValue },
+    };
+    const res = await documentClient.query(params).promise();
+    return res.Items || [];
+  },
 };
 module.exports = Dynamo;

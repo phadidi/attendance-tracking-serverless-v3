@@ -145,17 +145,22 @@ resources:
       Properties:
         TableName: ${self:custom.attendanceTable}
         AttributeDefinitions:
-          - AttributeName: ID #TODO: make the primary key a combo of ID/email, course section, and date rows
+          - AttributeName: ID #TODO: make the primary key a combo of ID/email, course section, and Date rows (YYYY-MM-DD format) [three strings in table]
+            AttributeType: S
+          - AttributeName: section|date # TODO: determine if it is possible to split this key into 2, thereby having 3 indexes
             AttributeType: S
         KeySchema:
           - AttributeName: ID
             KeyType: HASH
+          - AttributeName: section|date
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
+        # TODO: Implement Hash/Primary Key ID/email, Range Key courseSection plus date to have three-key index?
         # TODO: determine if Global Secondary Index(es) is/are necessary, example below:
         # GlobalSecondaryIndexes:
         #   - IndexName: table-index
         #     KeySchema:
-        #       - AttributeName: name
+        #       - AttributeName: courseSection (+date?)
         #         KeyType: HASH
         #     Projection:
         #       ProjectionType: ALL

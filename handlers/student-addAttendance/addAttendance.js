@@ -18,6 +18,6 @@ module.exports.handler = async (event) => {
   //     updateValue: 'marked',
   //   });
   return utils.createResponse(200, {
-    message: 'An attendance table needs to be implemented',
+    message: 'This feature is still in development',
   });
 };
