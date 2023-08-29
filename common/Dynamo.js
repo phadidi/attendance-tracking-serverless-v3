@@ -52,7 +52,7 @@ const Dynamo = {
     };
     return documentClient.update(params).promise();
   },
-  //TODO: determine if this function is needed for updating the to-be-implemented student attendances DB
+  //TODO: determine if this function is needed for upcoming features
   query: async ({ TableName, index, queryKey, queryValue }) => {
     const params = {
       TableName,
