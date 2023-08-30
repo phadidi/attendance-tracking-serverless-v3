@@ -53,13 +53,13 @@ functions:
           path: /addAttendance
           cors: true
           method: post
-#   teacher-verifyAttendance:
-#     handler: handlers/teacher-verifyAttendance/verifyAttendance.handler
-#     events:
-#       - http:
-#           path: /verifyAttendance
-#           cors: true
-#           method: post
+  teacher-verifyAttendance:
+    handler: handlers/teacher-verifyAttendance/verifyAttendance.handler
+    events:
+      - http:
+          path: /verifyAttendance
+          cors: true
+          method: post
 
 plugins:
   - serverless-s3-sync

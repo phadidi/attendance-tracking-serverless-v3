@@ -4,7 +4,6 @@ const fetchAttendance = require('../../common/fetchAttendance').fetchAttendance;
 const attendanceTable = process.env.attendanceTable;
 module.exports.handler = async (event) => {
   //Check if a student is taking a course section, and the attendance isn't previously marked/verified/rejected
-
   if (!event.body)
     return utils.createResponse(400, {
       message: 'Missing event body',
@@ -23,7 +22,7 @@ module.exports.handler = async (event) => {
   console.log('fetched Attendance:', attendance);
   const ID = body.email + '|' + body.courseSection + '|' + body.date;
 
-  // TODO: implement the operation below with the correct parameters, add validation operations
+  // TODO: add validation operations
   // Check if there is an attendance for the provided section + date, and if it can be updated
   // Update the table accordingly
   const res = await Dynamo.update({
