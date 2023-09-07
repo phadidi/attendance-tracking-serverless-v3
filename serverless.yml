@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   profile: ServerlessUserBasic
+  stage: dev
   environment:
     usersTable: ${self:custom.usersTable}
     coursesTable: ${self:custom.coursesTable}
@@ -179,3 +180,20 @@ resources:
           - AttributeName: ID
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.stage}-user-pool
+        UsernameAttributes: #TODO: figure out how to have multiple accounts in dev mode without needing to provision emails
+          - email
+        AutoVerifiedAttributes:
+          - email
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.stage}-user-pool-client
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+        UserPoolId:
+          Ref: CognitoUserPool
