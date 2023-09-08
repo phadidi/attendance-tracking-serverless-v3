@@ -77,7 +77,7 @@ custom:
   usersTable: attendance-tracker-users
   coursesTable: attendance-tracker-courses
   attendanceTable: attendance-tracker-student-attendances
-  tempLoginTable: attendance-tracker-users-temp-login #TODO: add hashing, phase this into a Cognito user pool
+  tempLoginTable: attendance-tracker-users-temp-login #TODO: remove this table after all functionalities are reworked with Cognito User Pool
 
 resources:
   Resources:
@@ -184,7 +184,7 @@ resources:
       Type: AWS::Cognito::UserPool
       Properties:
         UserPoolName: ${self:provider.stage}-user-pool
-        UsernameAttributes: #TODO: figure out how to have multiple accounts in dev mode without needing to provision emails
+        UsernameAttributes:
           - email
         AutoVerifiedAttributes:
           - email
@@ -194,6 +194,7 @@ resources:
         ClientName: ${self:provider.stage}-user-pool-client
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
+        PreventUserExistenceErrors: ENABLED #TODO: Determine if LEGACY or ENABLED is better for the APIS, or if this should be removed
         GenerateSecret: false
         UserPoolId:
           Ref: CognitoUserPool
