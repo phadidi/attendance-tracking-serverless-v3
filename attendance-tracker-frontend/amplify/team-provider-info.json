@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-attendancetrackamp-dev-94256-authRole",
+      "UnauthRoleArn": "arn:aws:iam::019730358105:role/amplify-attendancetrackamp-dev-94256-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::019730358105:role/amplify-attendancetrackamp-dev-94256-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-attendancetrackamp-dev-94256-deployment",
+      "UnauthRoleName": "amplify-attendancetrackamp-dev-94256-unauthRole",
+      "StackName": "amplify-attendancetrackamp-dev-94256",
+      "StackId": "arn:aws:cloudformation:us-east-1:019730358105:stack/amplify-attendancetrackamp-dev-94256/c4742200-4e66-11ee-8567-12081a4484ef",
+      "AmplifyAppId": "d3o9z2t5m7yysm"
+    },
+    "categories": {
+      "auth": {
+        "attendancetrackamp420a3960": {}
+      }
+    }
+  }
+}
