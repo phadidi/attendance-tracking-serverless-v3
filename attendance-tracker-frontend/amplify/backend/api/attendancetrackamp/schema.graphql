@@ -1,0 +1,42 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY {
+  globalAuthRule: AuthRule = { allow: public }
+} # FOR TESTING ONLY!
+# TODO: make sure Student/Teacher ID is an email address
+type Student @model {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  enrollments: [courseSection] @hasMany
+  attendances: [Attendance] @hasMany
+}
+
+type Teacher @model {
+  id: ID!
+  firstName: String!
+  courseSections: [courseSection] @hasMany
+}
+
+type Course @model {
+  id: ID! #TODO: make sure this is the course title
+  name: String!
+  sections: [courseSection] @hasMany
+}
+
+type courseSection @model {
+  id: ID! # This should be the course id and section name, joined by '-'
+  name: String!
+  course: Course! @hasOne
+  teacher: Teacher @belongsTo
+  enrolled: [Student] @hasMany
+}
+
+type Attendance @model {
+  id: ID! #TODO: make the identifier a combination of student, courseSection, and date
+  student: Student! @belongsTo
+  courseSection: courseSection! @hasOne
+  teacher: Teacher # TODO: determine how to handle when teacher is null (Does @hasOne cause problems?)
+  date: String!
+  status: String!
+}
