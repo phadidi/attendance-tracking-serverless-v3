@@ -9,7 +9,6 @@ provider:
   environment:
     usersTable: ${self:custom.usersTable}
     coursesTable: ${self:custom.coursesTable}
-    tempLoginTable: ${self:custom.tempLoginTable}
     attendanceTable: ${self:custom.attendanceTable}
   ##TODO: grant fine grained permissions per lambda
   iam: #TODO: reduce these to principle of least privilege
@@ -20,11 +19,6 @@ provider:
             - dynamodb:*
           Resource:
             - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.usersTable}
-        - Effect: Allow
-          Action:
-            - dynamodb:*
-          Resource:
-            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.tempLoginTable}
         - Effect: Allow
           Action:
             - dynamodb:*
@@ -77,7 +71,6 @@ custom:
   usersTable: attendance-tracker-users
   coursesTable: attendance-tracker-courses
   attendanceTable: attendance-tracker-student-attendances
-  tempLoginTable: attendance-tracker-users-temp-login #TODO: remove this table after all functionalities are reworked with Cognito User Pool
 
 resources:
   Resources:
@@ -162,17 +155,6 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.coursesTable}
-        AttributeDefinitions:
-          - AttributeName: ID
-            AttributeType: S
-        KeySchema:
-          - AttributeName: ID
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-    TempLoginTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.tempLoginTable}
         AttributeDefinitions:
           - AttributeName: ID
             AttributeType: S
