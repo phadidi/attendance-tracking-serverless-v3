@@ -35,7 +35,7 @@ function App() {
           <div className="courseList">
             {courses.map((course) => {
               return (
-                <Paper variant="outlined" elevation={1}>
+                <Paper elevation={1}>
                   <div className="courseCard">
                     {/*TODO: Specialize this for student/teacher*/}
                     <div className="courseName">{course.name}</div>
