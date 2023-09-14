@@ -33,16 +33,16 @@ function App() {
         <div className="App">
           <h3>Welcome {user.username}, student/teacher pages coming soon!</h3>
           <div className="courseList">
-            {courses.map((course) => {
+            {courses.map((course, index) => {
               return (
-                <Paper elevation={1}>
+                <Paper elevation={1} key={`course${index}`}>
                   <div className="courseCard">
                     {/*TODO: Specialize this for student/teacher*/}
                     <div className="courseName">{course.name}</div>
                     {/*TODO: identify how place courseSection and other hasMany rows into GraphQL, and render them here*/}
                     {/*<div className="courseSections">{course.sections}</div> */}
                     <IconButton>
-                      {/*TODO: Make this a status marker for attendances*/}
+                      {/*TODO: Make this a status marker for attendances, use index to update attendance status*/}
                       <IndeterminateCheckBoxIcon />
                     </IconButton>
                   </div>
