@@ -33,7 +33,7 @@ type courseSection @model {
 }
 
 type Attendance @model {
-  id: ID! #TODO: make the identifier a combination of student, courseSection, and date
+  id: ID! #TODO: Figure out if this should be a UUID or combination of student, courseSection, and date for optimal searching
   student: Student! @belongsTo
   courseSection: courseSection! @hasOne
   teacher: Teacher # TODO: determine how to handle when teacher is null (Does @hasOne cause problems?)
